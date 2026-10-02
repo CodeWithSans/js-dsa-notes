@@ -1,0 +1,554 @@
+<title>JavaScript &amp; DSA Notes</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: single reading column, sticky chip nav, code blocks scroll in place.
+   Cool slate neutrals (blue bias) + amber for say-this-out-loud + rose for traps. */
+:root{
+  --bg:#f7f8fa; --surface:#ffffff; --sunken:#eef1f5;
+  --fg:#16202e; --muted:#5a6779; --faint:#8995a6; --rule:#dde3ea;
+  --accent:#1f5fa8; --amber:#8a5a00; --amber-bg:#fdf4e1; --amber-rule:#e8cf9a;
+  --rose:#9e2a3f; --rose-bg:#fdeef0; --green:#1f6b45;
+  --code-bg:#1b2430; --code-fg:#dfe6ef; --code-key:#8fb8e8; --code-com:#7d8da1;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11161d; --surface:#171e27; --sunken:#1d2530;
+  --fg:#e4eaf2; --muted:#9aa7b8; --faint:#71808f; --rule:#2a3542;
+  --accent:#73aeec; --amber:#e8b964; --amber-bg:#2a2112; --amber-rule:#5c4a22;
+  --rose:#f0909f; --rose-bg:#2c161b; --green:#6cc295;
+  --code-bg:#0d1218; --code-fg:#dfe6ef;
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#11161d; --surface:#171e27; --sunken:#1d2530;
+  --fg:#e4eaf2; --muted:#9aa7b8; --faint:#71808f; --rule:#2a3542;
+  --accent:#73aeec; --amber:#e8b964; --amber-bg:#2a2112; --amber-rule:#5c4a22;
+  --rose:#f0909f; --rose-bg:#2c161b; --green:#6cc295;
+  --code-bg:#0d1218; --code-fg:#dfe6ef;
+  color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-text-size-adjust:100%}
+.wrap{max-width:46rem;margin:0 auto;padding-inline:18px;padding-block:0 64px}
+h1,h2,h3{text-wrap:balance;line-height:1.25;margin:0}
+
+/* header */
+header.top{padding-block:28px 18px;border-bottom:1px solid var(--rule)}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:0 0 10px}
+h1{font-size:1.65rem;font-weight:700;letter-spacing:-.015em}
+.when{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px 14px;font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.when b{color:var(--fg);font-weight:600}
+
+/* sticky nav */
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);
+    border-bottom:1px solid var(--rule);margin-inline:-18px;padding-inline:18px}
+.chips{display:flex;gap:7px;overflow-x:auto;padding-block:11px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips a{flex:0 0 auto;font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;
+  text-decoration:none;color:var(--muted);background:var(--sunken);border:1px solid var(--rule);
+  padding:5px 11px;border-radius:999px;white-space:nowrap}
+.chips a:hover,.chips a:focus-visible{color:var(--accent);border-color:var(--accent)}
+
+section{padding-block:34px 4px;scroll-margin-top:72px}
+section + section{border-top:1px solid var(--rule)}
+h2{font-size:1.22rem;font-weight:650;letter-spacing:-.01em;margin-bottom:6px}
+h2 .num{font-family:var(--mono);font-size:12px;color:var(--faint);margin-right:9px;font-weight:500}
+.lede{color:var(--muted);font-size:14.5px;margin:0 0 18px}
+h3{font-size:.97rem;font-weight:650;margin:26px 0 8px;letter-spacing:-.005em}
+h3 .tag{font-family:var(--mono);font-size:11px;color:var(--faint);font-weight:500;margin-left:7px}
+p{margin:0 0 12px}
+ul{margin:0 0 12px;padding-left:19px}
+li{margin-bottom:6px}
+code{font-family:var(--mono);font-size:.875em;background:var(--sunken);padding:1.5px 5px;border-radius:4px}
+
+/* code block */
+pre{background:var(--code-bg);color:var(--code-fg);font-family:var(--mono);font-size:12.5px;
+    line-height:1.62;padding:14px 15px;border-radius:9px;overflow-x:auto;margin:0 0 14px;min-width:0}
+pre code{background:none;padding:0;font-size:inherit;color:inherit}
+.c{color:var(--code-com)}
+.k{color:var(--code-key)}
+
+/* callouts */
+.say{background:var(--amber-bg);border:1px solid var(--amber-rule);border-radius:9px;
+     padding:13px 15px;margin:0 0 15px}
+.say .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;
+     color:var(--amber);font-weight:600;display:block;margin-bottom:6px}
+.say p{margin:0;font-size:14.5px}
+.trap{background:var(--rose-bg);border-left:3px solid var(--rose);border-radius:0 7px 7px 0;
+      padding:11px 14px;margin:0 0 15px;font-size:14.5px}
+.trap b{color:var(--rose)}
+
+/* rules list */
+ol.rules{counter-reset:r;list-style:none;padding:0;margin:0 0 8px;display:flex;flex-direction:column;gap:13px}
+ol.rules li{counter-increment:r;position:relative;padding-left:34px;margin:0;font-size:15px}
+ol.rules li::before{content:counter(r);position:absolute;left:0;top:1px;width:23px;height:23px;
+  display:grid;place-items:center;font-family:var(--mono);font-size:11.5px;font-weight:600;
+  color:var(--accent);background:var(--sunken);border:1px solid var(--rule);border-radius:50%}
+ol.rules b{font-weight:650}
+
+/* trigger table */
+.tbl{overflow-x:auto;margin:0 0 16px;border:1px solid var(--rule);border-radius:9px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:22rem}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+   color:var(--faint);font-weight:600;background:var(--sunken)}
+tr:last-child td{border-bottom:none}
+td.t{font-family:var(--mono);font-size:12px;color:var(--accent)}
+td.big{font-family:var(--mono);font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums}
+
+footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--rule);
+  font-size:13px;color:var(--faint);font-family:var(--mono)}
+a{color:var(--accent)}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+
+<div class="wrap">
+
+<header class="top">
+  <p class="eyebrow">Revision notes</p>
+  <h1>JavaScript &amp; DSA Notes</h1>
+  <div class="when">
+    <span><b>Round 1</b> — easy DSA in JavaScript</span>
+  </div>
+  <div class="when" style="margin-top:2px">
+    <span><b>Round 2</b> — harder DSA + React / Node</span>
+  </div>
+</header>
+
+<nav>
+  <div class="chips">
+    <a href="#day">On the day</a>
+    <a href="#rules">In the room</a>
+    <a href="#triggers">Pattern triggers</a>
+    <a href="#big-o">Complexity</a>
+    <a href="#js">JS essentials</a>
+    <a href="#concepts">JS concepts</a>
+    <a href="#easy">Easy problems</a>
+    <a href="#patterns">Patterns</a>
+  </div>
+</nav>
+
+<section id="day">
+  <h2><span class="num">00</span>On the day</h2>
+  <p class="lede">Read only this page on the day. No new problems — new material on the morning of an interview adds panic, not knowledge.</p>
+  <ul>
+    <li><b>45 min before</b> — test the call link, camera, mic, internet.</li>
+    <li><b>15 min before</b> — editor open, these notes open on your phone, water on the desk.</li>
+    <li><b>On time</b> — go.</li>
+  </ul>
+  <div class="say">
+    <span class="lbl">If your mind goes blank</span>
+    <p>Say: “Let me make sure I understand the problem first.” Then restate it in your own words. It buys you twenty seconds and it is a scored behaviour, not a stall.</p>
+  </div>
+</section>
+
+<section id="rules">
+  <h2><span class="num">01</span>In the room</h2>
+  <p class="lede">For a trainee role, how you reason is weighted more heavily than whether you reach the optimal solution.</p>
+  <ol class="rules">
+    <li><b>Think out loud, always.</b> Silence reads as stuck. Narration reads as engineer. Even “I’m thinking a hash map here, because lookups are O(1)” earns marks.</li>
+    <li><b>Clarify before coding.</b> Can the array be empty? Negative numbers? Duplicates? Asking is scored behaviour.</li>
+    <li><b>Brute force first, then optimise.</b> Say it: “Let me get it working, then improve it.” A working O(n²) beats a broken O(n).</li>
+    <li><b>State complexity unprompted.</b> End every problem with “that’s O(n) time, O(n) space.” Costs nothing, sounds senior.</li>
+    <li><b>When stuck, say what you know.</b> “I need to remember what I’ve already seen, so a Set is probably involved — let me build from there.”</li>
+    <li><b>Never bluff.</b> “I haven’t used that, but I’ve used X for the same problem” survives follow-ups. Bluffing collapses on question two.</li>
+  </ol>
+  <div class="trap"><b>Skip entirely:</b> dynamic programming, graphs, trees, backtracking. If one appears, talk through a brute force and move on. That is an acceptable outcome at trainee level.</div>
+</section>
+
+<section id="triggers">
+  <h2><span class="num">02</span>Pattern triggers</h2>
+  <p class="lede">Don’t memorise solutions. Memorise which words in the question point to which pattern, and say the mapping out loud before you code.</p>
+  <div class="tbl"><table>
+    <tr><th>When you hear</th><th>Reach for</th></tr>
+    <tr><td>count · frequency · duplicate · seen before · group by</td><td class="t">hash map / Set</td></tr>
+    <tr><td>sorted · in place · pair that sums to · palindrome</td><td class="t">two pointers</td></tr>
+    <tr><td>subarray · substring · consecutive · window · longest</td><td class="t">sliding window</td></tr>
+    <tr><td>brackets · matching · valid · most recent</td><td class="t">stack</td></tr>
+    <tr><td>sorted + find something</td><td class="t">binary search</td></tr>
+  </table></div>
+  <div class="say">
+    <span class="lbl">Say this before you write code</span>
+    <p>“This asks for the longest substring with a condition, so I’ll use a sliding window with a hash map tracking what’s inside the window.” That one sentence tells them you know what you’re doing.</p>
+  </div>
+</section>
+
+<section id="big-o">
+  <h2><span class="num">03</span>Complexity</h2>
+  <div class="tbl"><table>
+    <tr><th>Notation</th><th>Name</th><th>Where it shows up</th></tr>
+    <tr><td class="big">O(1)</td><td>constant</td><td>array index, Map/Set get·has·set, push·pop</td></tr>
+    <tr><td class="big">O(log n)</td><td>logarithmic</td><td>binary search — halving each step</td></tr>
+    <tr><td class="big">O(n)</td><td>linear</td><td>one pass, includes, indexOf</td></tr>
+    <tr><td class="big">O(n log n)</td><td>linearithmic</td><td>sorting</td></tr>
+    <tr><td class="big">O(n²)</td><td>quadratic</td><td>nested loop over the same array</td></tr>
+  </table></div>
+  <p><b>Rule of thumb:</b> a nested loop over one array is O(n²) and they want better. Adding a Set or Map to avoid the inner loop is the better — it makes it O(n). Sorting first gives O(n log n), which is often good enough.</p>
+  <p><b>Space</b> is the extra memory you allocate. A Map holding n items is O(n) space. Reversing with two pointers is O(1).</p>
+</section>
+
+<section id="js">
+  <h2><span class="num">04</span>JS essentials</h2>
+  <p class="lede">The syntax you need to write DSA at all. Without it the problems feel harder than they are.</p>
+
+  <h3>The sort trap <span class="tag">they test this</span></h3>
+  <pre><code><span class="c">// WRONG — default sort compares as STRINGS, so "10" &lt; "9"</span>
+[10, 9, 1].sort()              <span class="c">// [1, 10, 9]</span>
+
+<span class="c">// RIGHT</span>
+[10, 9, 1].sort((a, b) =&gt; a - b)   <span class="c">// ascending</span>
+[10, 9, 1].sort((a, b) =&gt; b - a)   <span class="c">// descending</span>
+
+<span class="c">// sort() MUTATES. Copy first:</span>
+[...arr].sort((a, b) =&gt; a - b)</code></pre>
+
+  <h3>Frequency counting <span class="tag">memorise this line</span></h3>
+  <pre><code>const freq = {};
+for (const ch of s) freq[ch] = (freq[ch] || 0) + 1;
+
+<span class="c">// Map version — same idea</span>
+const m = new Map();
+m.set(k, (m.get(k) || 0) + 1);</code></pre>
+
+  <h3>Set and Map</h3>
+  <pre><code>const seen = new Set();
+seen.add(1); seen.has(1);      <span class="c">// O(1) both</span>
+[...new Set(arr)]              <span class="c">// dedupe in one line</span></code></pre>
+
+  <h3>Strings are immutable</h3>
+  <pre><code>s[0] = 'x'                     <span class="c">// does nothing — no error, no change</span>
+
+s.split('').reverse().join('') <span class="c">// reverse a string</span>
+s.split(' ')                   <span class="c">// to words</span>
+s.toLowerCase()
+s.replace(/[^a-z0-9]/gi, '')   <span class="c">// strip punctuation</span>
+'a'.charCodeAt(0)              <span class="c">// 97   ('z'=122, 'A'=65)</span></code></pre>
+
+  <h3>Mutating vs returning new</h3>
+  <pre><code><span class="c">// MUTATES:</span>  push pop shift unshift splice sort reverse fill
+<span class="c">// RETURNS NEW:</span> map filter slice concat reduce flat join</code></pre>
+
+  <h3>Array cost</h3>
+  <pre><code>arr.push(x) / arr.pop()        <span class="c">// O(1) — the END is cheap</span>
+arr.unshift(x) / arr.shift()   <span class="c">// O(n) — shifts everything</span>
+arr.includes(x) / indexOf(x)   <span class="c">// O(n) — scans</span></code></pre>
+
+  <h3>Small things that come up</h3>
+  <pre><code>[x, y] = [y, x];               <span class="c">// swap, no temp variable</span>
+Math.max(...[1, 9, 3])         <span class="c">// 9 — spread into arguments</span>
+Math.floor(7 / 2)              <span class="c">// 3 — integer division</span>
+7 % 2                          <span class="c">// 1 — remainder, even/odd tests</span>
+Array(3).fill(0)               <span class="c">// [0, 0, 0]</span>
+Array.from({length: 2}, () =&gt; Array(3).fill(0))   <span class="c">// 2D grid</span></code></pre>
+
+  <div class="trap"><b>You cannot <code>break</code> out of <code>.forEach()</code>.</b> If you might need to stop early, use <code>for</code> or <code>for...of</code>.</div>
+</section>
+
+<section id="concepts">
+  <h2><span class="num">05</span>JS concepts</h2>
+  <p class="lede">Asked as “what does this print?”. Guess first, then read the why — the why is what’s scored.</p>
+
+  <h3>var · let · const</h3>
+  <pre><code>if (true) { var a = 1; let b = 2; }
+a   <span class="c">// 1 — var is FUNCTION-scoped, leaks out</span>
+b   <span class="c">// ReferenceError — let is BLOCK-scoped</span>
+
+const o = { n: 1 };
+o.n = 2;        <span class="c">// ALLOWED</span>
+o = {};         <span class="c">// TypeError</span></code></pre>
+  <div class="say"><span class="lbl">Say it like this</span><p><code>const</code> prevents reassignment, not mutation.</p></div>
+
+  <h3>Hoisting</h3>
+  <pre><code>typeof varX   <span class="c">// "undefined" — var hoists, initialised to undefined</span>
+var varX = 5;
+
+letY          <span class="c">// ReferenceError — temporal dead zone</span>
+let letY = 5;
+
+hoisted()     <span class="c">// works — function DECLARATIONS hoist entirely</span>
+function hoisted() {}</code></pre>
+
+  <h3>== vs ===</h3>
+  <pre><code>0 == '0'            <span class="c">// true  — == converts types</span>
+0 === '0'           <span class="c">// false — === checks type too</span>
+null == undefined   <span class="c">// true</span>
+null === undefined  <span class="c">// false</span>
+NaN === NaN         <span class="c">// false — the famous one</span>
+Number.isNaN(NaN)   <span class="c">// true  — how you actually test</span>
+[] == false         <span class="c">// true  — coercion chaos</span></code></pre>
+  <div class="say"><span class="lbl">Say it like this</span><p>Always use <code>===</code>. The one exception is <code>x == null</code>, which deliberately catches both null and undefined.</p></div>
+
+  <h3>Truthy and falsy</h3>
+  <pre><code><span class="c">// Exactly 8 falsy values:</span>
+false, 0, -0, 0n, "", null, undefined, NaN
+
+Boolean([])   <span class="c">// true  — empty array is TRUTHY</span>
+Boolean({})   <span class="c">// true  — empty object is TRUTHY</span>
+Boolean("0")  <span class="c">// true  — non-empty string</span>
+
+0 || 'fallback'   <span class="c">// 'fallback' — || catches all falsy</span>
+0 ?? 'fallback'   <span class="c">// 0 — ?? only null/undefined</span></code></pre>
+
+  <h3>Closures <span class="tag">they will ask</span></h3>
+  <p>A closure is a function that remembers the variables from where it was <em>defined</em>, even after that outer function has finished.</p>
+  <pre><code>function makeCounter() {
+  let count = 0;              <span class="c">// stays alive — inner fn uses it</span>
+  return () =&gt; ++count;
+}
+const c = makeCounter();
+c(); c(); c();                <span class="c">// 1, 2, 3</span>
+makeCounter()();              <span class="c">// 1 — counters are independent</span></code></pre>
+  <div class="trap"><b>The classic trap.</b> A loop with <code>var</code> plus <code>setTimeout</code> prints <code>3 3 3</code>; with <code>let</code> it prints <code>0 1 2</code>. <code>var</code> has one shared binding for the whole function; <code>let</code> creates a new binding each iteration.</div>
+  <div class="say"><span class="lbl">Where you meet it in real code</span><p>Express middleware factories are closures: <code>requireRole(...roles)</code> returns a middleware function that remembers <code>roles</code>. A good example to give when asked where you have used one.</p></div>
+
+  <h3>Arrow functions and <code>this</code></h3>
+  <pre><code>const team = {
+  name: 'Acme',
+  regular() { return this.name; },   <span class="c">// 'Acme'</span>
+  arrow: () =&gt; this.name,            <span class="c">// NOT the object</span>
+};</code></pre>
+  <p>Arrows have no <code>this</code> of their own — they take it from the surrounding scope. Never use an arrow for an object method that needs <code>this</code>. Do use arrows for callbacks inside a method.</p>
+
+  <h3>The event loop <span class="tag">very common</span></h3>
+  <pre><code>console.log('1');
+setTimeout(() =&gt; console.log('2'), 0);
+Promise.resolve().then(() =&gt; console.log('3'));
+console.log('4');
+
+<span class="c">// prints 1, 4, 3, 2</span></code></pre>
+  <div class="say"><span class="lbl">The why</span><p>Synchronous code runs first (1, 4). Then <b>microtasks</b> — promise callbacks (3). Then <b>macrotasks</b> — setTimeout (2). Microtasks always beat setTimeout, even <code>setTimeout(fn, 0)</code>.</p></div>
+
+  <h3>Promises</h3>
+  <pre><code>async function f() { return 'data'; }   <span class="c">// always returns a Promise</span>
+
+try { await somethingThatRejects(); }
+catch (err) { <span class="c">/* await + try/catch is how you handle it */</span> }
+
+Promise.all()        <span class="c">// waits for ALL, rejects if ANY fails</span>
+Promise.allSettled() <span class="c">// waits for all, never rejects</span>
+Promise.race()       <span class="c">// first one to settle wins</span></code></pre>
+
+  <h3>Shallow vs deep copy</h3>
+  <pre><code>const copy = { ...original };    <span class="c">// ONE level only</span>
+copy.nested.x = 999;             <span class="c">// leaks into original!</span>
+
+structuredClone(original)        <span class="c">// true deep copy</span></code></pre>
+
+  <h3>Debounce <span class="tag">search boxes</span></h3>
+  <pre><code>function debounce(fn, delay) {
+  let timer;                       <span class="c">// closure keeps this alive</span>
+  return function (...args) {
+    clearTimeout(timer);           <span class="c">// cancel the previous call</span>
+    timer = setTimeout(() =&gt; fn.apply(this, args), delay);
+  };
+}</code></pre>
+  <p><b>Debounce</b> waits until the user stops typing, then fires once. <b>Throttle</b> fires at most once per interval while typing. The everyday use is a search box: debounce it so you make one API call instead of one per keystroke.</p>
+</section>
+
+<section id="easy">
+  <h2><span class="num">06</span>Easy problems</h2>
+  <p class="lede">Round 1 material. Read the approach, then close the page and write it from a blank file — retyping from memory is where the learning happens.</p>
+
+  <h3>Two Sum <span class="tag">know this cold</span></h3>
+  <p>As you walk the array, ask: have I already seen <code>target - current</code>?</p>
+  <pre><code>function twoSum(nums, target) {
+  const seen = new Map();            <span class="c">// value -&gt; index</span>
+  for (let i = 0; i &lt; nums.length; i++) {
+    const need = target - nums[i];
+    if (seen.has(need)) return [seen.get(need), i];
+    seen.set(nums[i], i);
+  }
+  return [];
+}
+<span class="c">// O(n) time, O(n) space. Brute force is two nested loops, O(n²).</span></code></pre>
+
+  <h3>Reverse a string</h3>
+  <pre><code>const reverse = s =&gt; s.split('').reverse().join('');
+
+<span class="c">// if they ban built-ins:</span>
+function reverseLoop(s) {
+  let out = '';
+  for (let i = s.length - 1; i &gt;= 0; i--) out += s[i];
+  return out;
+}</code></pre>
+
+  <h3>Palindrome</h3>
+  <pre><code>function isPalindrome(s) {
+  const c = s.toLowerCase().replace(/[^a-z0-9]/g, '');
+  let i = 0, j = c.length - 1;
+  while (i &lt; j) {
+    if (c[i] !== c[j]) return false;
+    i++; j--;
+  }
+  return true;
+}
+<span class="c">// Two pointers = O(1) extra space. Say that — the</span>
+<span class="c">// reverse-and-compare version is O(n) space.</span></code></pre>
+
+  <h3>Second largest</h3>
+  <pre><code>function secondLargest(arr) {
+  let first = -Infinity, second = -Infinity;
+  for (const n of arr) {
+    if (n &gt; first) { second = first; first = n; }
+    else if (n &gt; second &amp;&amp; n !== first) second = n;
+  }
+  return second === -Infinity ? null : second;
+}</code></pre>
+  <div class="trap"><b>Don’t sort and take <code>[1]</code>.</b> Duplicates break it — <code>[5,5,3]</code> would give 5 instead of 3.</div>
+
+  <h3>Anagram</h3>
+  <pre><code><span class="c">// O(n log n) — one line</span>
+const norm = s =&gt; s.toLowerCase().split('').sort().join('');
+const isAnagram = (a, b) =&gt; norm(a) === norm(b);
+
+<span class="c">// O(n) — the better answer</span>
+function isAnagramCount(a, b) {
+  if (a.length !== b.length) return false;
+  const freq = {};
+  for (const ch of a) freq[ch] = (freq[ch] || 0) + 1;
+  for (const ch of b) {
+    if (!freq[ch]) return false;
+    freq[ch]--;
+  }
+  return true;
+}</code></pre>
+
+  <h3>Move zeroes (in place)</h3>
+  <pre><code>function moveZeroes(nums) {
+  let write = 0;
+  for (let read = 0; read &lt; nums.length; read++) {
+    if (nums[read] !== 0) {
+      [nums[write], nums[read]] = [nums[read], nums[write]];
+      write++;
+    }
+  }
+  return nums;
+}
+<span class="c">// O(n) time, O(1) space — "in place" is the point.</span></code></pre>
+
+  <h3>FizzBuzz</h3>
+  <pre><code>for (let i = 1; i &lt;= n; i++) {
+  if (i % 15 === 0) out.push('FizzBuzz');     <span class="c">// check 15 FIRST</span>
+  else if (i % 3 === 0) out.push('Fizz');
+  else if (i % 5 === 0) out.push('Buzz');
+  else out.push(String(i));
+}</code></pre>
+
+  <h3>Prime check</h3>
+  <pre><code>function isPrime(n) {
+  if (n &lt; 2) return false;
+  for (let i = 2; i * i &lt;= n; i++) if (n % i === 0) return false;
+  return true;
+}</code></pre>
+  <div class="say"><span class="lbl">Say this</span><p>“I only loop to the square root, because if n has a factor above its square root it must also have one below it.” O(√n).</p></div>
+
+  <h3>Also know</h3>
+  <ul>
+    <li><b>Count vowels</b> — <code>Set</code> of vowels, O(1) lookup per char.</li>
+    <li><b>Remove duplicates</b> — <code>[...new Set(arr)]</code>.</li>
+    <li><b>Sum / average</b> — <code>reduce</code>, and guard <code>length === 0</code> or you get NaN.</li>
+    <li><b>Factorial / Fibonacci</b> — write them iteratively. If you use recursion, state the base case and that naive fib is O(2ⁿ).</li>
+    <li><b>Missing number 0..n</b> — expected sum is <code>n*(n+1)/2</code>, subtract the actual. O(1) space.</li>
+    <li><b>Reverse words</b> — <code>s.trim().split(/\s+/).reverse().join(' ')</code>; the regex handles double spaces.</li>
+  </ul>
+</section>
+
+<section id="patterns">
+  <h2><span class="num">07</span>The four patterns</h2>
+  <p class="lede">Almost every easy and medium problem is one of these. Recognising which beats memorising any single solution.</p>
+
+  <h3>Hash map <span class="tag">count · seen before</span></h3>
+  <pre><code><span class="c">// First non-repeating character — two passes.</span>
+<span class="c">// One pass can't work: you don't know if a duplicate is coming.</span>
+function firstNonRepeating(s) {
+  const freq = {};
+  for (const ch of s) freq[ch] = (freq[ch] || 0) + 1;
+  for (const ch of s) if (freq[ch] === 1) return ch;
+  return null;
+}
+
+<span class="c">// Group anagrams — the sorted string IS the key</span>
+function groupAnagrams(words) {
+  const groups = new Map();
+  for (const w of words) {
+    const key = w.split('').sort().join('');
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(w);
+  }
+  return [...groups.values()];
+}</code></pre>
+
+  <h3>Two pointers <span class="tag">sorted · in place</span></h3>
+  <pre><code><span class="c">// Pair with a given sum in a SORTED array.</span>
+<span class="c">// Too small -&gt; move left up. Too big -&gt; move right down.</span>
+function pairSum(arr, target) {
+  let i = 0, j = arr.length - 1;
+  while (i &lt; j) {
+    const sum = arr[i] + arr[j];
+    if (sum === target) return [arr[i], arr[j]];
+    if (sum &lt; target) i++; else j--;
+  }
+  return [];
+}
+<span class="c">// O(n) time, O(1) space — better than the hash map version</span>
+<span class="c">// precisely because the array is already sorted.</span></code></pre>
+
+  <h3>Sliding window <span class="tag">subarray · longest</span></h3>
+  <pre><code><span class="c">// FIXED window — max sum of size k. Add the new, subtract</span>
+<span class="c">// the one that fell out. One pass instead of O(n·k).</span>
+function maxSum(arr, k) {
+  let sum = 0;
+  for (let i = 0; i &lt; k; i++) sum += arr[i];
+  let best = sum;
+  for (let i = k; i &lt; arr.length; i++) {
+    sum += arr[i] - arr[i - k];
+    best = Math.max(best, sum);
+  }
+  return best;
+}
+
+<span class="c">// VARIABLE window — longest substring, no repeats</span>
+function longestUnique(s) {
+  const lastSeen = new Map();
+  let left = 0, best = 0;
+  for (let right = 0; right &lt; s.length; right++) {
+    const ch = s[right];
+    if (lastSeen.has(ch) &amp;&amp; lastSeen.get(ch) &gt;= left) {
+      left = lastSeen.get(ch) + 1;      <span class="c">// jump the window</span>
+    }
+    lastSeen.set(ch, right);
+    best = Math.max(best, right - left + 1);
+  }
+  return best;
+}</code></pre>
+
+  <h3>Stack <span class="tag">brackets · matching</span></h3>
+  <pre><code>function isValidParens(s) {
+  const pairs = { ')': '(', ']': '[', '}': '{' };
+  const stack = [];
+  for (const ch of s) {
+    if (ch === '(' || ch === '[' || ch === '{') stack.push(ch);
+    else if (pairs[ch] &amp;&amp; stack.pop() !== pairs[ch]) return false;
+  }
+  return stack.length === 0;   <span class="c">// leftover openers = invalid</span>
+}</code></pre>
+
+  <h3>Binary search <span class="tag">sorted + find</span></h3>
+  <pre><code>function binarySearch(arr, target) {
+  let lo = 0, hi = arr.length - 1;
+  while (lo &lt;= hi) {
+    const mid = Math.floor((lo + hi) / 2);
+    if (arr[mid] === target) return mid;
+    if (arr[mid] &lt; target) lo = mid + 1;
+    else hi = mid - 1;
+  }
+  return -1;
+}</code></pre>
+  <div class="trap"><b>Two bugs to avoid:</b> it’s <code>lo &lt;= hi</code>, not <code>&lt;</code>. And it’s <code>mid + 1</code> / <code>mid - 1</code>, not <code>mid</code> — otherwise you loop forever.</div>
+</section>
+
+<footer>
+  Every snippet here runs in Node. Don’t read them — retype them from a blank file.
+</footer>
+
+</div>
