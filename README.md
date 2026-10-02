@@ -12,3 +12,11 @@ Covers:
 - Complexity — Big-O, with where each one shows up
 - Easy problems — Two Sum, palindrome, anagram, move zeroes, and more
 - The four patterns — hash map, two pointers, sliding window, stack
+
+## Study checklist
+
+A full-stack study roadmap — 367 topics across JavaScript, DSA, React, Node,
+databases, web fundamentals, Git and CS basics, in learning order with
+tick-off progress saved in your browser:
+
+https://codewithsans.github.io/js-dsa-notes/checklist.html

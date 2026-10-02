@@ -1,0 +1,742 @@
+<title>Full Stack Study Checklist</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: single column, sticky nav + progress, tick-off list with saved state.
+   Same slate/amber system as the notes page so the two read as one set. */
+:root{
+  --bg:#f7f8fa; --surface:#ffffff; --sunken:#eef1f5;
+  --fg:#16202e; --muted:#5a6779; --faint:#8995a6; --rule:#dde3ea;
+  --accent:#1f5fa8; --amber:#8a5a00; --amber-bg:#fdf4e1; --amber-rule:#e8cf9a;
+  --done:#1f6b45; --done-bg:#e8f3ed;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11161d; --surface:#171e27; --sunken:#1d2530;
+  --fg:#e4eaf2; --muted:#9aa7b8; --faint:#71808f; --rule:#2a3542;
+  --accent:#73aeec; --amber:#e8b964; --amber-bg:#2a2112; --amber-rule:#5c4a22;
+  --done:#6cc295; --done-bg:#17251e;
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#11161d; --surface:#171e27; --sunken:#1d2530;
+  --fg:#e4eaf2; --muted:#9aa7b8; --faint:#71808f; --rule:#2a3542;
+  --accent:#73aeec; --amber:#e8b964; --amber-bg:#2a2112; --amber-rule:#5c4a22;
+  --done:#6cc295; --done-bg:#17251e;
+  color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-text-size-adjust:100%}
+.wrap{max-width:46rem;margin:0 auto;padding-inline:18px;padding-block:0 64px}
+h1,h2,h3{text-wrap:balance;line-height:1.25;margin:0}
+
+header.top{padding-block:28px 16px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:0 0 10px}
+h1{font-size:1.6rem;font-weight:700;letter-spacing:-.015em}
+.sub{color:var(--muted);font-size:14.5px;margin:10px 0 0}
+.sub a{color:var(--accent)}
+
+/* overall progress */
+.overall{margin-top:18px;background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:14px 16px}
+.overall .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:9px}
+.overall .big{font-family:var(--mono);font-size:1.35rem;font-weight:600;font-variant-numeric:tabular-nums}
+.overall .of{font-family:var(--mono);font-size:12px;color:var(--faint)}
+.bar{height:7px;background:var(--sunken);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:99px;transition:width .25s}
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}
+button{font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:var(--muted);
+  background:var(--sunken);border:1px solid var(--rule);padding:6px 12px;border-radius:99px;cursor:pointer}
+button:hover,button:focus-visible{color:var(--accent);border-color:var(--accent)}
+button[aria-pressed="true"]{background:var(--amber-bg);border-color:var(--amber-rule);color:var(--amber)}
+
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);
+    border-bottom:1px solid var(--rule);margin-inline:-18px;padding-inline:18px;margin-top:20px}
+.chips{display:flex;gap:7px;overflow-x:auto;padding-block:11px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips a{flex:0 0 auto;font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;text-decoration:none;
+  color:var(--muted);background:var(--sunken);border:1px solid var(--rule);padding:5px 11px;border-radius:999px;white-space:nowrap}
+.chips a:hover,.chips a:focus-visible{color:var(--accent);border-color:var(--accent)}
+
+section{padding-block:32px 6px;scroll-margin-top:70px}
+section+section{border-top:1px solid var(--rule)}
+h2{font-size:1.25rem;font-weight:650;letter-spacing:-.01em}
+.lede{color:var(--muted);font-size:14.5px;margin:7px 0 14px}
+.meter{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.meter .bar{flex:1;min-width:0}
+.meter .cnt{font-family:var(--mono);font-size:11.5px;color:var(--faint);white-space:nowrap;font-variant-numeric:tabular-nums}
+.meter .cnt b{color:var(--fg);font-weight:600}
+h3{font-size:.9rem;font-weight:650;margin:22px 0 9px;color:var(--muted);
+   font-family:var(--mono);letter-spacing:.01em}
+
+ul.cl{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:2px}
+ul.cl li{margin:0}
+ul.cl label{display:flex;gap:11px;align-items:flex-start;padding:7px 9px;border-radius:7px;cursor:pointer}
+ul.cl label:hover{background:var(--sunken)}
+ul.cl input{appearance:none;flex:0 0 auto;width:17px;height:17px;margin-top:2px;border:1.5px solid var(--rule);
+  border-radius:5px;background:var(--surface);cursor:pointer;position:relative}
+ul.cl input:checked{background:var(--done);border-color:var(--done)}
+ul.cl input:checked::after{content:"";position:absolute;left:5px;top:1.5px;width:4px;height:9px;
+  border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+ul.cl input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.txt{font-size:14.5px;min-width:0}
+input:checked ~ .txt{color:var(--faint);text-decoration:line-through;text-decoration-thickness:1px}
+.must{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--amber);background:var(--amber-bg);border:1px solid var(--amber-rule);
+  padding:1px 6px;border-radius:99px;margin-left:8px;vertical-align:1.5px;font-weight:600}
+input:checked ~ .txt .must{opacity:.45}
+body.only-must ul.cl li:not(:has(.must)){display:none}
+body.only-must h3:not(:has(+ ul .must)){display:none}
+
+footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--rule);font-size:13px;color:var(--faint)}
+footer a{color:var(--accent)}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+
+<div class="wrap">
+
+<header class="top">
+  <p class="eyebrow">Study roadmap</p>
+  <h1>Full Stack Study Checklist</h1>
+  <p class="sub">Every concept, in learning order. Search each one, learn it, tick it off.
+  Items tagged <span class="must">core</span> get asked in almost every full-stack interview —
+  learn those first, then come back for the rest. This is a roadmap for months, not days;
+  for an interview in the next few days use the
+  <a href="./">JavaScript &amp; DSA Notes</a> instead.</p>
+
+  <div class="overall">
+    <div class="row">
+      <span class="big"><b id="done-all">0</b> <span class="of">/ 367 topics</span></span>
+      <span class="of"><b id="done-must">0</b> / 237 core</span>
+    </div>
+    <div class="bar"><i id="bar-all"></i></div>
+    <div class="tools">
+      <button id="filter" aria-pressed="false">Show core only</button>
+      <button id="reset">Reset progress</button>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="chips">
+    <a href="#js">JavaScript</a>
+    <a href="#dsa">DSA</a>
+    <a href="#react">React</a>
+    <a href="#node">Node and Express</a>
+    <a href="#db">Databases</a>
+    <a href="#web">Web fundamentals</a>
+    <a href="#git">Git and tooling</a>
+    <a href="#cs">CS fundamentals</a>
+  </div>
+</nav>
+
+<section id="js">
+  <h2>JavaScript</h2>
+  <p class="lede">Everything from first principles to the advanced things interviewers probe.</p>
+  <div class="meter"><div class="bar"><i data-bar="js"></i></div>
+    <span class="cnt"><b data-done="js">0</b> / 116 · 88 core</span></div>
+  <h3>Getting started</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="js"><span class="txt">What JavaScript is; where it runs (browser vs Node)<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Running code: browser console, &lt;script&gt; tag, node file.js<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Comments, statements, semicolons, strict mode</span></label></li>
+</ul><h3>Variables and types</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="js"><span class="txt">var vs let vs const — scope, redeclaration, reassignment<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Primitives: string, number, boolean, null, undefined, symbol, bigint<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Objects vs primitives; reference vs value copying<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">typeof, and why typeof null is "object"<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Type conversion: explicit (Number, String, Boolean) vs implicit coercion<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">== vs === ; the full coercion rules<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Truthy and falsy — the 8 falsy values<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">NaN, Infinity, Number.isNaN vs isNaN<span class="must">must</span></span></label></li>
+</ul><h3>Operators</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="js"><span class="txt">Arithmetic, assignment, comparison operators<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Logical &amp;&amp; || ! and short-circuit evaluation<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Ternary operator<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Nullish coalescing ?? and how it differs from ||<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Optional chaining ?.<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Spread and rest ...<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Bitwise operators</span></label></li>
+</ul><h3>Strings</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="js"><span class="txt">Immutability — why s[0] = 'x' does nothing<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">length, indexing, charAt, charCodeAt<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">slice, substring, split, join, trim<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">toUpperCase, toLowerCase, includes, indexOf, startsWith, endsWith<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">replace, replaceAll, and basic regex<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Template literals and multi-line strings<span class="must">must</span></span></label></li>
+</ul><h3>Numbers and Math</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="js"><span class="txt">parseInt, parseFloat, Number(), toFixed<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Math.floor, ceil, round, abs, max, min, random, sqrt, pow<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Floating point precision (0.1 + 0.2 !== 0.3)<span class="must">must</span></span></label></li>
+</ul><h3>Control flow</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="js"><span class="txt">if / else if / else<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">switch, and why you need break<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">for, while, do-while<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">for...of (values) vs for...in (keys)<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">break, continue<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Nested loops and star/number pattern printing<span class="must">must</span></span></label></li>
+</ul><h3>Functions</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="js"><span class="txt">Declaration vs expression vs arrow function<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Parameters, arguments, default parameters, rest parameters<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Return values; functions returning functions<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Arrow functions: no own this, no arguments object<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Callbacks and higher-order functions<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">IIFE (immediately invoked function expression)</span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Pure functions and side effects</span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Recursion: base case, recursive case, call stack<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Currying and partial application</span></label></li>
+</ul><h3>Scope and closures</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="js"><span class="txt">Global, function and block scope<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Lexical scope and the scope chain<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Hoisting: var vs let/const, temporal dead zone<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Function declarations hoist; expressions do not<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Closures — what they are and why they persist<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">The classic var-in-a-loop + setTimeout trap<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Practical closures: counters, once(), middleware factories<span class="must">must</span></span></label></li>
+</ul><h3>Arrays</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="js"><span class="txt">Creating, indexing, length, Array.isArray<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">push, pop, shift, unshift — and their O() cost<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">slice vs splice<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">concat, join, reverse, fill, flat, flatMap<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">indexOf, includes, find, findIndex<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">map, filter, reduce — know reduce cold<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">some, every, sort (and the string-compare trap)<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Which methods mutate vs return a new array<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Destructuring, swapping, spread copying<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Array.from, Array.of, creating 2D arrays<span class="must">must</span></span></label></li>
+</ul><h3>Objects</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="js"><span class="txt">Literals, dot vs bracket access, nested objects<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Adding, updating, deleting properties<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Shorthand properties and computed keys<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Object.keys, values, entries, assign, freeze<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Destructuring with defaults and renaming<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Shallow vs deep copy; structuredClone<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">JSON.stringify / JSON.parse and their limits<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Optional chaining on nested data<span class="must">must</span></span></label></li>
+</ul><h3>this and binding</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="js"><span class="txt">How this is decided by the call site<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Implicit binding (obj.method())<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Explicit binding: call, apply, bind<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">new binding</span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Arrow functions inherit this from enclosing scope<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Losing this in callbacks, and how to fix it<span class="must">must</span></span></label></li>
+</ul><h3>Prototypes and OOP</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="js"><span class="txt">Prototype chain and __proto__ vs prototype</span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Constructor functions and the new keyword</span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">class syntax: constructor, methods, fields<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">extends, super, method overriding<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Static methods and properties</span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Getters and setters</span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">instanceof</span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">The four OOP pillars and how JS expresses them<span class="must">must</span></span></label></li>
+</ul><h3>Error handling</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="js"><span class="txt">try / catch / finally<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">throw and the Error object<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Error types: TypeError, ReferenceError, SyntaxError<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Custom error classes</span></label></li>
+</ul><h3>Asynchronous JavaScript</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="js"><span class="txt">Synchronous vs asynchronous; blocking vs non-blocking<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Call stack, Web APIs, callback queue, event loop<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Microtask queue vs macrotask queue — why promises beat setTimeout<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">setTimeout, setInterval, clearTimeout<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Callbacks and callback hell<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Promises: pending / fulfilled / rejected<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">then, catch, finally, and promise chaining<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Promise.all, allSettled, race, any<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">async / await and how it maps to promises<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Error handling with try/catch around await<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">fetch: requests, responses, .json(), error handling<span class="must">must</span></span></label></li>
+</ul><h3>Modules</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="js"><span class="txt">ES modules: import / export, named vs default<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">CommonJS: require / module.exports<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Why module scope matters</span></label></li>
+</ul><h3>Advanced JavaScript</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="js"><span class="txt">Map and Set — when to prefer them over objects/arrays<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">WeakMap and WeakSet</span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Symbol</span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Iterators and the iterable protocol</span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Generators (function*, yield)</span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Proxy and Reflect</span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Debounce and throttle — write both from scratch<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Memoization</span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Event delegation</span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Garbage collection and memory leaks</span></label></li>
+</ul><h3>DOM and browser</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="js"><span class="txt">querySelector, getElementById, and friends</span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Creating, inserting, removing elements</span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Changing text, HTML, attributes, classes, styles</span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">addEventListener; the event object</span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Event bubbling, capturing, stopPropagation, preventDefault</span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">Forms: reading values, validation, submit handling</span></label></li>
+<li><label><input type="checkbox" data-k="js"><span class="txt">localStorage, sessionStorage, cookies</span></label></li>
+</ul>
+</section>
+
+<section id="dsa">
+  <h2>DSA</h2>
+  <p class="lede">Start at the top and go down. Do not jump to graphs and DP before the basics are automatic.</p>
+  <div class="meter"><div class="bar"><i data-bar="dsa"></i></div>
+    <span class="cnt"><b data-done="dsa">0</b> / 122 · 54 core</span></div>
+  <h3>Foundations</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">What an algorithm is; correctness vs efficiency<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Big-O notation: O(1), O(log n), O(n), O(n log n), O(n^2)<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Time complexity vs space complexity<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Best, average and worst case<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">How to estimate complexity by counting loops<span class="must">must</span></span></label></li>
+</ul><h3>Level 1 — array basics</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Traverse, sum, average of an array<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Find max and min<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Second largest / second smallest (watch duplicates)<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Reverse an array in place<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Count even/odd, positive/negative<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Linear search<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Rotate an array by k<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Move all zeroes to the end<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Remove duplicates<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Merge two sorted arrays<span class="must">must</span></span></label></li>
+</ul><h3>Level 1 — string basics</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Reverse a string (with and without built-ins)<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Palindrome check<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Count vowels and consonants<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Character frequency count<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">First non-repeating character<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Anagram check (sorting vs counting)<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Reverse words in a sentence<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Toggle case; capitalise each word</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Remove duplicate characters<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Longest word in a sentence</span></label></li>
+</ul><h3>Level 1 — number problems</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Even or odd; positive or negative<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Prime check (loop only to sqrt n)<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Factorial — iterative and recursive<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Fibonacci — iterative and recursive<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Sum / reverse of digits<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Armstrong number, perfect number</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">GCD and LCM</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Power of a number</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Decimal to binary</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Star and number pattern printing<span class="must">must</span></span></label></li>
+</ul><h3>Level 2 — hashing</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Frequency map with an object or Map<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Detect duplicates with a Set<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Two Sum — the hash map version<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Majority element<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Group anagrams<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Intersection and union of two arrays<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">First repeating element<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Subarray with sum zero</span></label></li>
+</ul><h3>Level 2 — two pointers</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Reverse an array in place<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Pair with a given sum in a sorted array<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Remove duplicates from a sorted array in place<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Sort an array of 0s, 1s and 2s (Dutch national flag)</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Container with most water</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Three sum</span></label></li>
+</ul><h3>Level 2 — sliding window</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Max sum subarray of fixed size k<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Longest substring without repeating characters<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Smallest subarray with sum &gt;= target</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Count anagram occurrences in a string</span></label></li>
+</ul><h3>Level 2 — prefix sum</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Running sum / prefix sum array<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Subarray sum equals k</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Equilibrium index</span></label></li>
+</ul><h3>Level 2 — searching and sorting</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Linear search vs binary search<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Binary search — iterative and recursive<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">First and last occurrence of an element</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Search in a rotated sorted array</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Bubble, selection, insertion sort — how they work and their cost<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Merge sort — the merge step matters most<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Quick sort — partitioning, average vs worst case<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Built-in sort and the comparator function<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Stable vs unstable sorting</span></label></li>
+</ul><h3>Level 2 — stack and queue</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Stack concept; array as a stack<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Valid parentheses / balanced brackets<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Next greater element</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Min stack</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Queue concept; enqueue and dequeue<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Circular queue</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Queue using two stacks; stack using two queues</span></label></li>
+</ul><h3>Level 3 — linked lists</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Node structure; singly linked list</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Traverse, insert at head/tail, delete a node</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Reverse a linked list</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Find the middle (slow and fast pointers)</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Detect a cycle (Floyd's algorithm)</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Merge two sorted linked lists</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Remove the nth node from the end</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Palindrome linked list</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Doubly and circular linked lists</span></label></li>
+</ul><h3>Level 3 — recursion and backtracking</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Base case, recursive case, the call stack<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Factorial, Fibonacci, sum of digits recursively<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Tower of Hanoi</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Generate all subsets of a set</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Generate all permutations of a string</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">N-Queens (understand the idea)</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Rat in a maze / sudoku solver (awareness)</span></label></li>
+</ul><h3>Level 3 — trees</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Tree vocabulary: root, leaf, height, depth</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Binary tree vs binary search tree</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Traversals: inorder, preorder, postorder</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Level order traversal (BFS on a tree)</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Height and diameter of a tree</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Search and insert in a BST</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Validate a BST</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Lowest common ancestor</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Mirror / invert a tree</span></label></li>
+</ul><h3>Level 3 — heaps</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Min heap and max heap; the heap property</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Priority queue concept</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Kth largest / smallest element</span></label></li>
+</ul><h3>Level 4 — graphs</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Representations: adjacency list vs matrix</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">BFS traversal</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">DFS traversal</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Detect a cycle in a graph</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Topological sort</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Dijkstra's shortest path (awareness)</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Connected components</span></label></li>
+</ul><h3>Level 4 — dynamic programming</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Overlapping subproblems and optimal substructure</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Memoization (top-down) vs tabulation (bottom-up)</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Fibonacci with DP</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Climbing stairs</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">House robber</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Coin change</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Longest common subsequence</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">0/1 knapsack</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Longest increasing subsequence</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Kadane's algorithm (max subarray sum)<span class="must">must</span></span></label></li>
+</ul><h3>Level 4 — extras</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Greedy: activity selection, fractional knapsack</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Bit manipulation: XOR tricks, single number, count set bits</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Trie (prefix tree)</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Union-Find / disjoint set</span></label></li>
+<li><label><input type="checkbox" data-k="dsa"><span class="txt">Matrix problems: spiral, rotate, transpose</span></label></li>
+</ul>
+</section>
+
+<section id="react">
+  <h2>React</h2>
+  <p class="lede">Round 2 territory. Know the hooks properly; everything else builds on them.</p>
+  <div class="meter"><div class="bar"><i data-bar="react"></i></div>
+    <span class="cnt"><b data-done="react">0</b> / 35 · 27 core</span></div>
+  <h3>Core</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="react"><span class="txt">What React is; why a component model<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">JSX and how it compiles<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">Function components<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">Props — passing data down, props are read-only<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">State with useState<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">State updates are asynchronous and batched<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">Updating state based on previous state<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">Conditional rendering<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">Rendering lists and why keys matter<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">Handling events<span class="must">must</span></span></label></li>
+</ul><h3>Forms and effects</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="react"><span class="txt">Controlled vs uncontrolled components<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">Form handling and validation<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">useEffect — what it is for<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">The dependency array: empty, omitted, with values<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">Cleanup functions and why they prevent leaks<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">Data fetching with loading and error states<span class="must">must</span></span></label></li>
+</ul><h3>Structure and sharing state</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="react"><span class="txt">Lifting state up<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">Prop drilling and its problems<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">Context API: createContext, Provider, useContext<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">Composition vs inheritance</span></label></li>
+</ul><h3>Hooks in depth</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="react"><span class="txt">The rules of hooks<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">useRef — DOM access and mutable values<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">useMemo</span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">useCallback</span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">React.memo</span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">useReducer</span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">Writing a custom hook<span class="must">must</span></span></label></li>
+</ul><h3>How React works</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="react"><span class="txt">Virtual DOM and diffing<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">Reconciliation and why keys affect it<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">Re-render triggers; what causes extra renders<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">Component lifecycle in hook terms<span class="must">must</span></span></label></li>
+</ul><h3>Ecosystem</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="react"><span class="txt">react-router: routes, params, navigation, protected routes<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">State management options (Redux / Zustand / Query) — awareness</span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">Error boundaries</span></label></li>
+<li><label><input type="checkbox" data-k="react"><span class="txt">Code splitting and lazy loading</span></label></li>
+</ul>
+</section>
+
+<section id="node">
+  <h2>Node and Express</h2>
+  <p class="lede">The backend half of the full-stack question.</p>
+  <div class="meter"><div class="bar"><i data-bar="node"></i></div>
+    <span class="cnt"><b data-done="node">0</b> / 31 · 26 core</span></div>
+  <h3>Node fundamentals</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="node"><span class="txt">What Node is; V8, event-driven, non-blocking I/O<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">The Node event loop vs the browser event loop<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">npm: install, package.json, scripts, dependencies vs devDependencies<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">CommonJS require vs ES modules<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">Core modules: fs, path, http, os, events<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">Streams and buffers (awareness)</span></label></li>
+</ul><h3>Express</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="node"><span class="txt">Creating a server; listening on a port<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">Routing: GET, POST, PUT, PATCH, DELETE<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">Route params, query params, request body<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">Middleware: what it is and why order matters<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">Built-in, third-party and custom middleware<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">Error-handling middleware (four arguments)<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">Router modules and mounting<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">Serving static files</span></label></li>
+</ul><h3>APIs</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="node"><span class="txt">REST principles and resource naming<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">HTTP methods and when to use each<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">HTTP status codes — know the common ones<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">Request / response cycle<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">JSON request and response handling<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">API versioning (awareness)</span></label></li>
+</ul><h3>Auth and security</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="node"><span class="txt">Hashing passwords with bcrypt; salt rounds<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">Hashing vs encryption<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">JWT: structure, signing, verifying, expiry<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">Sessions vs tokens<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">Storing tokens: localStorage vs httpOnly cookies, and XSS<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">Role-based authorisation<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">CORS — what it is and why it blocks you<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">Environment variables and dotenv<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">Rate limiting</span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">helmet and common security headers</span></label></li>
+<li><label><input type="checkbox" data-k="node"><span class="txt">Input validation on the server<span class="must">must</span></span></label></li>
+</ul>
+</section>
+
+<section id="db">
+  <h2>Databases</h2>
+  <p class="lede">SQL is asked far more often than NoSQL in interviews, even for MERN roles.</p>
+  <div class="meter"><div class="bar"><i data-bar="db"></i></div>
+    <span class="cnt"><b data-done="db">0</b> / 25 · 21 core</span></div>
+  <h3>SQL fundamentals</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="db"><span class="txt">Tables, rows, columns, data types<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="db"><span class="txt">Primary key, foreign key, composite key<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="db"><span class="txt">CREATE, ALTER, DROP</span></label></li>
+<li><label><input type="checkbox" data-k="db"><span class="txt">SELECT, INSERT, UPDATE, DELETE<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="db"><span class="txt">WHERE with AND / OR / NOT / IN / BETWEEN / LIKE<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="db"><span class="txt">ORDER BY, LIMIT, OFFSET, DISTINCT<span class="must">must</span></span></label></li>
+</ul><h3>SQL intermediate</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="db"><span class="txt">Aggregates: COUNT, SUM, AVG, MIN, MAX<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="db"><span class="txt">GROUP BY and HAVING (and how HAVING differs from WHERE)<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="db"><span class="txt">INNER JOIN<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="db"><span class="txt">LEFT JOIN and RIGHT JOIN<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="db"><span class="txt">FULL OUTER JOIN and SELF JOIN</span></label></li>
+<li><label><input type="checkbox" data-k="db"><span class="txt">Subqueries and nested SELECTs<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="db"><span class="txt">Constraints: NOT NULL, UNIQUE, CHECK, DEFAULT<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="db"><span class="txt">Indexes — what they speed up and what they cost<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="db"><span class="txt">Normalisation: 1NF, 2NF, 3NF<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="db"><span class="txt">Transactions and ACID properties<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="db"><span class="txt">SQL injection and parameterised queries<span class="must">must</span></span></label></li>
+</ul><h3>MongoDB</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="db"><span class="txt">Documents, collections, BSON<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="db"><span class="txt">CRUD operations<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="db"><span class="txt">Query operators ($gt, $in, $regex)<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="db"><span class="txt">Mongoose: schemas, models, validation<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="db"><span class="txt">Embedding vs referencing<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="db"><span class="txt">Aggregation pipeline basics</span></label></li>
+<li><label><input type="checkbox" data-k="db"><span class="txt">Indexes in MongoDB</span></label></li>
+<li><label><input type="checkbox" data-k="db"><span class="txt">SQL vs NoSQL — when you would choose each<span class="must">must</span></span></label></li>
+</ul>
+</section>
+
+<section id="web">
+  <h2>Web fundamentals</h2>
+  <p class="lede">The questions that sit underneath everything else.</p>
+  <div class="meter"><div class="bar"><i data-bar="web"></i></div>
+    <span class="cnt"><b data-done="web">0</b> / 20 · 13 core</span></div>
+  <h3>HTML and CSS</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="web"><span class="txt">Semantic HTML elements</span></label></li>
+<li><label><input type="checkbox" data-k="web"><span class="txt">Forms and input types</span></label></li>
+<li><label><input type="checkbox" data-k="web"><span class="txt">The box model<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="web"><span class="txt">Flexbox<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="web"><span class="txt">CSS Grid</span></label></li>
+<li><label><input type="checkbox" data-k="web"><span class="txt">Position: static, relative, absolute, fixed, sticky<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="web"><span class="txt">Responsive design and media queries<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="web"><span class="txt">Specificity and the cascade<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="web"><span class="txt">Tailwind utility-first basics</span></label></li>
+</ul><h3>How the web works</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="web"><span class="txt">Client-server model<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="web"><span class="txt">HTTP request and response structure<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="web"><span class="txt">HTTP vs HTTPS<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="web"><span class="txt">Status codes: 2xx, 3xx, 4xx, 5xx<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="web"><span class="txt">Headers, cookies, caching basics</span></label></li>
+<li><label><input type="checkbox" data-k="web"><span class="txt">DNS and what happens when you type a URL<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="web"><span class="txt">How a browser renders a page</span></label></li>
+</ul><h3>Security basics</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="web"><span class="txt">XSS — what it is and how to prevent it<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="web"><span class="txt">CSRF</span></label></li>
+<li><label><input type="checkbox" data-k="web"><span class="txt">SQL injection<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="web"><span class="txt">Why you never store plain passwords<span class="must">must</span></span></label></li>
+</ul>
+</section>
+
+<section id="git">
+  <h2>Git and tooling</h2>
+  <p class="lede">Quick to learn, and it comes up in almost every interview.</p>
+  <div class="meter"><div class="bar"><i data-bar="git"></i></div>
+    <span class="cnt"><b data-done="git">0</b> / 11 · 7 core</span></div>
+  <h3>Daily Git</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="git"><span class="txt">init, clone, status, add, commit<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="git"><span class="txt">log, diff, show<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="git"><span class="txt">branch, switch / checkout<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="git"><span class="txt">merge and resolving conflicts<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="git"><span class="txt">remote, push, pull, fetch<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="git"><span class="txt">.gitignore<span class="must">must</span></span></label></li>
+</ul><h3>Beyond the basics</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="git"><span class="txt">Pull request workflow<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="git"><span class="txt">rebase vs merge</span></label></li>
+<li><label><input type="checkbox" data-k="git"><span class="txt">stash</span></label></li>
+<li><label><input type="checkbox" data-k="git"><span class="txt">reset vs revert</span></label></li>
+<li><label><input type="checkbox" data-k="git"><span class="txt">Tags and releases</span></label></li>
+</ul>
+</section>
+
+<section id="cs">
+  <h2>CS fundamentals</h2>
+  <p class="lede">Commonly asked in Indian product and service company interviews.</p>
+  <div class="meter"><div class="bar"><i data-bar="cs"></i></div>
+    <span class="cnt"><b data-done="cs">0</b> / 7 · 1 core</span></div>
+  <h3>Concepts</h3>
+<ul class="cl">
+<li><label><input type="checkbox" data-k="cs"><span class="txt">OOP: encapsulation, abstraction, inheritance, polymorphism<span class="must">must</span></span></label></li>
+<li><label><input type="checkbox" data-k="cs"><span class="txt">Process vs thread</span></label></li>
+<li><label><input type="checkbox" data-k="cs"><span class="txt">Concurrency vs parallelism</span></label></li>
+<li><label><input type="checkbox" data-k="cs"><span class="txt">Deadlock — the four conditions</span></label></li>
+<li><label><input type="checkbox" data-k="cs"><span class="txt">Stack vs heap memory</span></label></li>
+<li><label><input type="checkbox" data-k="cs"><span class="txt">TCP vs UDP</span></label></li>
+<li><label><input type="checkbox" data-k="cs"><span class="txt">Monolith vs microservices (awareness)</span></label></li>
+</ul>
+</section>
+
+<footer>
+  Progress is saved in this browser only — it does not sync between your phone and laptop.<br>
+  Source: <a href="https://github.com/CodeWithSans/js-dsa-notes">github.com/CodeWithSans/js-dsa-notes</a>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var KEY = 'fs-checklist-v1';
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('ul.cl input'));
+  boxes.forEach(function (b, i) { b.id = 't' + i; });
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; }
+    catch (e) { return {}; }
+  }
+  function save(state) {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  var state = load();
+  boxes.forEach(function (b) { if (state[b.id]) b.checked = true; });
+
+  function pct(done, total) { return total ? Math.round((done / total) * 100) : 0; }
+
+  function render() {
+    var doneAll = 0, doneMust = 0, mustTotal = 0;
+    var per = {};
+    boxes.forEach(function (b) {
+      var k = b.dataset.k;
+      per[k] = per[k] || { d: 0, t: 0 };
+      per[k].t++;
+      var isMust = !!b.parentNode.querySelector('.must');
+      if (isMust) mustTotal++;
+      if (b.checked) {
+        doneAll++; per[k].d++;
+        if (isMust) doneMust++;
+      }
+    });
+    document.getElementById('done-all').textContent = doneAll;
+    document.getElementById('done-must').textContent = doneMust;
+    document.getElementById('bar-all').style.width = pct(doneAll, boxes.length) + '%';
+    Object.keys(per).forEach(function (k) {
+      var b = document.querySelector('[data-bar="' + k + '"]');
+      var d = document.querySelector('[data-done="' + k + '"]');
+      if (b) b.style.width = pct(per[k].d, per[k].t) + '%';
+      if (d) d.textContent = per[k].d;
+    });
+  }
+
+  boxes.forEach(function (b) {
+    b.addEventListener('change', function () {
+      if (b.checked) state[b.id] = 1; else delete state[b.id];
+      save(state);
+      render();
+    });
+  });
+
+  var filter = document.getElementById('filter');
+  filter.addEventListener('click', function () {
+    var on = filter.getAttribute('aria-pressed') === 'true';
+    filter.setAttribute('aria-pressed', String(!on));
+    document.body.classList.toggle('only-must', !on);
+    filter.textContent = !on ? 'Show all topics' : 'Show core only';
+  });
+
+  document.getElementById('reset').addEventListener('click', function () {
+    boxes.forEach(function (b) { b.checked = false; });
+    state = {}; save(state); render();
+  });
+
+  render();
+})();
+</script>
